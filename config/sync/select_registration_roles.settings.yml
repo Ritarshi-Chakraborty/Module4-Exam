@@ -1,0 +1,15 @@
+_core:
+  default_config_hash: SwDzMQWH_m4gaInWZ_ioWc09pITzfAAMXNLS4dXs95U
+select_registration_roles_setby_admin:
+  blogger: blogger
+  guest_blogger: guest_blogger
+  content_editor: '0'
+  administrator: '0'
+select_registration_roles_admin_approval:
+  content_editor: '0'
+  administrator: '0'
+  blogger: '0'
+  guest_blogger: '0'
+select_registration_roles_auth_role: false
+select_registration_roles_required: false
+select_registration_roles_multiple: false

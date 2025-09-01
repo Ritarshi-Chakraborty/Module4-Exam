@@ -1,0 +1,128 @@
+<?php
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\user\Entity\User;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+
+/**
+ * Implements hook_preprocess_page_title().
+ */
+function blogs_preprocess_page_title(&$variables) {
+  // Check if the current route is the user registration page.
+  if (\Drupal::routeMatch()->getRouteName() == 'user.register') {
+    // Set the new title for the registration form.
+    $variables['title'] = t('Become An Author');  
+  } 
+}
+
+/**
+ * Implements hook_entity_insert().
+ */
+function blogs_entity_insert(EntityInterface $entity) {
+  if ($entity->getEntityTypeId() === 'user') {
+    // Send email to new user.
+    _blogs_send_user_email($entity);
+    // Send email to admin.
+    _blogs_send_admin_email($entity);
+  }
+}
+
+/**
+ * Send email to the new student with their info.
+ */
+function _blogs_send_user_email(User $user) {
+  $mailManager = \Drupal::service('plugin.manager.mail');
+  $module = 'blogs';
+  $key = 'user_notification';
+  $to = $user->getEmail();
+  $langcode = $user->getPreferredLangcode();
+  $params = [];
+
+  // Collect user data.
+  $params['subject'] = 'Welcome!';
+  $params['message'] = <<<EOT
+
+  Hi, {$user->get('field_full_name')->value}.
+
+  Thank you for your submission. We will get back to you soon.
+  EOT;
+
+  $send = TRUE;
+  $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+}
+
+/**
+ * Send email to all administrators.
+ */
+function _blogs_send_admin_email(User $user) {
+  $mailManager = \Drupal::service('plugin.manager.mail');
+  $module = 'blogs';
+  $key = 'admin_notification';
+  $langcode = \Drupal::languageManager()->getDefaultLanguage()->getId();
+  $params = [];
+
+  // Get the user roles.
+  $user_roles = $user->getRoles();
+  $role = '';
+  if($user->hasRole('blogger')) {
+    $role = 'Blogger';
+  }
+  elseif ($user->hasRole('guest_blogger')) {
+    $role = 'Guest Blogger';
+  }
+
+  $uids = \Drupal::entityQuery('user')
+    ->condition('status', 1)
+    ->condition('roles', 'administrator')
+    ->accessCheck(TRUE)
+    ->execute();
+
+  $admins = \Drupal::entityTypeManager()->getStorage('user')->loadMultiple($uids);
+
+  foreach ($admins as $admin) {
+    $to = $admin->getEmail();
+
+    $params['subject'] = 'New User Registration!';
+    $params['message'] = <<<EOT
+    A new user has applied for an account.
+
+    Details:
+    - User ID: {$user->id()}
+    - Full Name: {$user->get('field_full_name')->value}
+    - Email: {$user->getEmail()}
+    - Role: {$role}
+    - Username: {$user->getDisplayName()}
+    EOT;
+
+    $mailManager->mail($module, $key, $to, $langcode, $params, NULL, TRUE);
+  }
+}
+
+/**
+ * Implements hook_mail().
+ */
+function blogs_mail($key, &$message, $params) {
+  $message['subject'] = $params['subject'];
+  $message['body'][] = $params['message'];
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function blogs_node_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+  // Check if entity is of type blog.
+  if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'blog') {
+    // Format the published time.
+    $time = date('Y-m-d', $entity->getCreatedTime());
+
+    $build['published_time'] = [
+      '#type' => 'markup',
+      '#title' => t('Published Time'),
+      '#markup' => "<div>
+                      <h5>Published Time</h5>
+                      <p>$time</p>
+                    </div",
+      '#weight' => 1000,
+    ];
+  }
+}
