@@ -1,0 +1,26 @@
+uuid: a39203b8-f0ab-41c9-9db8-7a4593030aa3
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.blog.field_blog_tags
+    - field.field.node.blog.field_body
+    - field.field.node.blog.field_like_count
+    - node.type.blog
+  module:
+    - user
+id: node.blog.teaser
+targetEntityType: node
+bundle: blog
+mode: teaser
+content:
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  field_blog_tags: true
+  field_body: true
+  field_like_count: true

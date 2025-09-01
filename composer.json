@@ -19,6 +19,12 @@
         "drupal/core-composer-scaffold": "^10.5",
         "drupal/core-project-message": "^10.5",
         "drupal/core-recommended": "^10.5",
+        "drupal/devel": "^5.4",
+        "drupal/expand_collapse_formatter": "^2.0",
+        "drupal/like_dislike": "^2.4",
+        "drupal/mail_login": "^4.2",
+        "drupal/maillog": "^1.1",
+        "drupal/select_registration_roles": "^2.0",
         "drush/drush": "^12.5"
     },
     "conflict": {

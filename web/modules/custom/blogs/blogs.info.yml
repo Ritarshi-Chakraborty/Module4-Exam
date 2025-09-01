@@ -1,0 +1,6 @@
+name: Blogs
+description: Module which provides the functionality to manage blogs.
+type: module
+package: Custom Modules
+version: 10.x
+core_version_requirement: ^10 || ^11

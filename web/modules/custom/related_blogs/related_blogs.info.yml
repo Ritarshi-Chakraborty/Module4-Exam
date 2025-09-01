@@ -1,0 +1,6 @@
+name: Related Blogs
+description: Module which displays related blogs of an author.
+type: module
+package: Custom Modules
+version: 10.x
+core_version_requirement: ^10 || ^11

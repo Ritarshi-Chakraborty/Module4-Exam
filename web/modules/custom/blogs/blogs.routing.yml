@@ -1,0 +1,7 @@
+blogs.blog-list:
+  path: /blog-list
+  defaults:
+    _controller: Drupal\blogs\Controller\BlogApiController::getAllBlogs
+    _title: All Nodes
+  requirements:
+    _permission: access content
