@@ -1,0 +1,4 @@
+name: mod4-exam
+recipe: drupal10
+config:
+  webroot: web
