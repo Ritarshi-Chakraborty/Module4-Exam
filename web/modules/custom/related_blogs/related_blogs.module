@@ -1,0 +1,80 @@
+<?php
+
+use Drupal\views\ViewExecutable;
+use Drupal\node\NodeInterface;
+use Drupal\node\Entity\Node;
+use Drupal\user\Entity\User;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+
+/**
+ * Implements hook_cron().
+ */
+function related_blogs_cron() {
+
+  //Storing the Limit date
+  $date = new \DateTime('-1 year');
+  //getting nid On the basis of Time and User Role
+  $nid_list = \Drupal::entityQuery('node')
+    ->condition('type', 'blog')
+    ->condition('uid.entity.roles.target_id', 'guest_blogger')
+    ->condition('created', date('Y-m-d', $date->getTimestamp()), '<=')
+    ->accessCheck(TRUE)
+    ->execute();
+
+  if (!empty($nid_list)) {
+    $storage_handler = \Drupal::entityTypeManager()->getStorage('node');
+    $nodes = $storage_handler->loadMultiple($nid_list);
+    $storage_handler->delete($nodes);
+  }
+
+  // Calculate the timestamp for one year ago.
+  $one_year_ago = \Drupal::time()->getRequestTime() - (365 * 24 * 60 * 60);
+
+  // Query for nodes of the specified content type.
+  $nids = \Drupal::entityQuery('node')
+    ->condition('type', 'blog')
+    ->condition('created', $one_year_ago, '<')
+    ->execute();
+
+  if(!empty($nids)) {
+    foreach ($nids as $nid) {
+      $node = Node::load($nid);
+      $author_id = $node->getOwnerId();
+      $author = User::load($author_id);
+
+      // Check if author exists and has the Guest Blogger role.
+      if($author && $author->hasRole('guest_blogger')) {
+        $node->delete();
+        \Drupal::logger('related_blogs')->notice('Deleted node @nid of type @type, authored by user @uid with role @role.', [
+            '@nid' => $nid,
+            '@type' => 'Blog',
+            '@uid' => $author_uid,
+            '@role' => $target_role,
+          ]);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function related_blogs_node_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+  // Check if entity is of type blog.
+  if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'blog') {
+    // Get the author full name.
+    $author = $entity->getOwner();
+    $author_fullname = $author->get('field_full_name')->value;
+
+    $build['author_fullname'] = [
+      '#type' => 'markup',
+      '#title' => t('Author Fullname'),
+      '#markup' => "<div>
+                      <h5>Author Fullname</h5>
+                      <p>$author_fullname</p>
+                    </div",
+      '#weight' => 900,
+    ];
+  }
+}

@@ -27,6 +27,7 @@ module:
   help: 0
   history: 0
   image: 0
+  like_dislike: 0
   link: 0
   mail_login: 0
   maillog: 0
@@ -38,6 +39,7 @@ module:
   page_cache: 0
   path: 0
   path_alias: 0
+  related_blogs: 0
   search: 0
   shortcut: 0
   system: 0

@@ -1,0 +1,33 @@
+uuid: 4cd514cf-19f2-4bdd-941b-d340a598c55a
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - related_blogs
+    - system
+  theme:
+    - olivero
+id: olivero_relatedblogs
+theme: olivero
+region: sidebar
+weight: 0
+provider: null
+plugin: related_blogs_block
+settings:
+  id: related_blogs_block
+  label: 'Related Blogs'
+  label_display: visible
+  provider: related_blogs
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: '/node/*'
+  'entity_bundle:node':
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
+    bundles:
+      blog: blog

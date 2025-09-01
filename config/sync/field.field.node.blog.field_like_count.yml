@@ -1,0 +1,21 @@
+uuid: d7c358b5-5e2d-4604-9249-ab0106a9020b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_like_count
+    - node.type.blog
+  module:
+    - like_dislike
+id: node.blog.field_like_count
+field_name: field_like_count
+entity_type: node
+bundle: blog
+label: 'Like Count'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: like_dislike

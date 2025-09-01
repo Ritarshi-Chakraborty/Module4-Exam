@@ -1,0 +1,19 @@
+uuid: 6a5f302e-be8c-4e3a-a18f-a8e7379ac486
+langcode: en
+status: true
+dependencies:
+  module:
+    - like_dislike
+    - node
+id: node.field_like_count
+field_name: field_like_count
+entity_type: node
+type: like_dislike
+settings: {  }
+module: like_dislike
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

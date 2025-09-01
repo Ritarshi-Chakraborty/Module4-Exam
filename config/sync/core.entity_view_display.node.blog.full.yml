@@ -1,8 +1,9 @@
-uuid: cf8e87b8-965b-44b9-a710-b25cacccaed6
+uuid: b4b9a7f9-5771-46f4-9da6-c59f8f698073
 langcode: en
-status: true
+status: false
 dependencies:
   config:
+    - core.entity_view_mode.node.full
     - field.field.node.blog.field_blog_tags
     - field.field.node.blog.field_body
     - field.field.node.blog.field_like_count
@@ -11,10 +12,10 @@ dependencies:
     - expand_collapse_formatter
     - like_dislike
     - user
-id: node.blog.default
+id: node.blog.full
 targetEntityType: node
 bundle: blog
-mode: default
+mode: full
 content:
   field_blog_tags:
     type: entity_reference_label
@@ -35,7 +36,7 @@ content:
       link_class_open: ecf-open
       link_class_close: ecf-close
     third_party_settings: {  }
-    weight: 1
+    weight: 0
     region: content
   field_like_count:
     type: like_dislike_formatter
@@ -49,6 +50,6 @@ content:
   links:
     settings: {  }
     third_party_settings: {  }
-    weight: 0
+    weight: 1
     region: content
 hidden: {  }
